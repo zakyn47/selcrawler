@@ -4,30 +4,41 @@ from selenium.webdriver.support import expected_conditions as EC
 import re
 from locators import Locators, AlzaLocators
 
+
 class Collector(object):
 
     email_regex = re.compile(r"[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+")
     phone_regex = re.compile(r"(^\+?[\d\s?]{10,15})")
+    
+    urls = []
 
 
-    def __init__(self) -> None:
-        self.urls = []
-        
+    def log_this(func):
+        """Decorator for data logging."""
+        def wrapper(self):
+            with open("log.txt", "a") as f:
+                for element in func(self):
+                    f.write(element + "\n")
+        return wrapper
 
-    def get_emails(self):
+
+    @log_this
+    def get_emails(self) -> list:
+        """Returns list of all emails on the page."""
         print("collecting emails at page: " + self.driver.current_url)
         for element in self.all_page_elements():
             emails = self.email_regex.findall(element.text)
-            if emails:
-                print(emails)
+        return emails
 
 
-    def get_phones(self):
+    @log_this
+    def get_phones(self) -> list:
+        """Returns list of all phone numbers on the page."""
         print("collecting phones at page: " + self.driver.current_url)
         for element in self.all_page_elements():
             phones = self.phone_regex.findall(element.text)
-            if phones:
-                print(phones)
+        return phones            
+                
 
 
     def all_page_elements(self) -> list:
@@ -37,19 +48,20 @@ class Collector(object):
         return self.driver.find_elements(*Locators.BODY)
 
 
-    def get_urls(self):
+    @log_this
+    def get_urls(self) -> list:
+        """Returns list of all urls on the page."""
         print("collecting urls at page: " + self.driver.current_url)
+        urls = []
         url_links = self.driver.find_element(*Locators.BODY).find_elements(By.TAG_NAME, "a")
         try:
             for link in url_links:
                 if link.get_attribute("href").startswith("http"):
                     self.urls.append(link.get_attribute("href"))
-                    print(link.get_attribute("href"))
-                    with open("links.txt", "a") as f:
-                        f.write(link.get_attribute("href"))
-                        f.write("\n")
+                    urls.append(link.get_attribute("href"))
         except:
             pass
+        return urls
 
 
     # alza

@@ -3,6 +3,8 @@ from selenium.webdriver.support.ui import WebDriverWait
 from webdriver_manager.chrome import ChromeDriverManager
 import time
 from collector import Collector
+import random
+
 
 class Crawler(Collector):
 
@@ -18,8 +20,7 @@ class Crawler(Collector):
 
     def go_to_next_url(self):
         if len(self.urls) > 1:
-            self.driver.get(self.urls[0])
-            self.urls.pop(0)
+            self.driver.get(random.choice(self.urls))
     
 
     def close(self):
@@ -27,19 +28,19 @@ class Crawler(Collector):
         
 
 if __name__ == "__main__":
-    UrlGrabber = Crawler("https://www.alza.cz/graficke-karty/18842862.htm")
+    crawler = Crawler("https://www.seznam.cz")
     start_time = time.time()
 
 
     next_pages = 5
     while next_pages > 0:
         next_pages -= 1
-        UrlGrabber.alza_items()
-        UrlGrabber.get_emails()
-        UrlGrabber.get_phones()
-        UrlGrabber.go_to_next_url()
+        crawler.get_urls()
+        crawler.go_to_next_url()
 
 
     end_time = time.time()
     print(f"Time taken: {end_time - start_time}")
-    UrlGrabber.close()
+    crawler.close()
+
+
