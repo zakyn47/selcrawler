@@ -13,6 +13,8 @@ class Collector(object):
     phone_regex = re.compile(r"(^\+?[\d\s?]{10,15})")
 
     urls = []
+    phones = []
+    emails = []
 
     def log_this(func):
         """Decorator for data logging."""
@@ -28,16 +30,18 @@ class Collector(object):
         """Returns list of all emails on the page."""
         print("collecting emails at page: " + self.driver.current_url)
         for element in self.all_page_elements():
-            emails = self.email_regex.findall(element.text)
-        return emails
+            email_addresses = self.email_regex.findall(element.text)
+            self.emails.extend(email_addresses)
+        return email_addresses
 
     @log_this
     def get_phones(self) -> list:
         """Returns list of all phone numbers on the page."""
         print("collecting phones at page: " + self.driver.current_url)
         for element in self.all_page_elements():
-            phones = self.phone_regex.findall(element.text)
-        return phones
+            phone_numbers = self.phone_regex.findall(element.text)
+            self.phones.extend(phone_numbers)
+        return phone_numbers
 
     def all_page_elements(self) -> list:
         """Returns list of all elements on the page."""
@@ -70,3 +74,4 @@ class Collector(object):
         print(len(items))
         for item in items:
             print(item.text)
+

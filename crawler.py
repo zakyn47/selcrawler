@@ -9,9 +9,8 @@ from collector import Collector
 
 
 class Crawler(Collector):
-
-    urls = []
-
+    
+    
     def __init__(self, url: str):
         self.driver = webdriver.Chrome(ChromeDriverManager().install())
         self.wait = WebDriverWait(self.driver, 10)
