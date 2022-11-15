@@ -1,6 +1,7 @@
 # selcrawler
 
 selcrawler is basic selenium webcrawler
+
 features:
 - crawl webpages
 - gather links
