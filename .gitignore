@@ -2,3 +2,4 @@ venv/
 __pychache__/
 log.txt
 *.ipynb
+.pytest_cache
