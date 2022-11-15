@@ -1,5 +1,6 @@
 import random
 import time
+import sys
 
 from selenium import webdriver
 from selenium.webdriver.support.ui import WebDriverWait
@@ -10,7 +11,7 @@ from collector import Collector
 
 class Crawler(Collector):
     
-    
+
     def __init__(self, url: str):
         self.driver = webdriver.Chrome(ChromeDriverManager().install())
         self.wait = WebDriverWait(self.driver, 10)
@@ -26,13 +27,19 @@ class Crawler(Collector):
 
 
 if __name__ == "__main__":
-    crawler = Crawler("https://www.seznam.cz")
+
+    start_url = sys.argv[1]
+    next_pages = int(sys.argv[2])
+
+    crawler = Crawler(f"https://{start_url}")
     start_time = time.time()
 
-    next_pages = 5
     while next_pages > 0:
+        print("next pages: " + str(next_pages))
         next_pages -= 1
         crawler.get_urls()
+        crawler.get_emails()
+        crawler.get_phones()
         crawler.go_to_next_url()
 
     end_time = time.time()

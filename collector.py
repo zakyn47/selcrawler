@@ -29,18 +29,24 @@ class Collector(object):
     def get_emails(self) -> list:
         """Returns list of all emails on the page."""
         print("collecting emails at page: " + self.driver.current_url)
-        for element in self.all_page_elements():
-            email_addresses = self.email_regex.findall(element.text)
-            self.emails.extend(email_addresses)
+        try:
+            for element in self.all_page_elements():
+                email_addresses = self.email_regex.findall(element.text)
+                self.emails.extend(email_addresses)
+        except Exception as e:
+            print(e)
         return email_addresses
 
     @log_this
     def get_phones(self) -> list:
         """Returns list of all phone numbers on the page."""
         print("collecting phones at page: " + self.driver.current_url)
-        for element in self.all_page_elements():
-            phone_numbers = self.phone_regex.findall(element.text)
-            self.phones.extend(phone_numbers)
+        try:
+            for element in self.all_page_elements():
+                phone_numbers = self.phone_regex.findall(element.text)
+                self.phones.extend(phone_numbers)
+        except Exception as e:
+            print(e)
         return phone_numbers
 
     def all_page_elements(self) -> list:
@@ -64,14 +70,3 @@ class Collector(object):
         except:
             pass
         return urls
-
-    # alza
-
-    def alza_items(self):
-        print("collecting items at page: " + self.driver.current_url)
-        items = self.driver.find_element(
-            *AlzaLocators.ITEMS).find_elements(By.TAG_NAME, "a")
-        print(len(items))
-        for item in items:
-            print(item.text)
-
